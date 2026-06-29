@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FY26 Quality Workshop - Improvement Voting</title>
+  <style>
+    :root {
+      --ink: #112225;
+      --muted: #5b6b70;
+      --line: #d8e0e3;
+      --paper: #f7faf9;
+      --card: #ffffff;
+      --teal: #007f83;
+      --teal-soft: #e7f5f5;
+      --orange: #f26b21;
+      --orange-soft: #fff1e8;
+      --green: #31765a;
+      --shadow: 0 12px 34px rgba(17, 34, 37, 0.10);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(135deg, rgba(0, 127, 131, 0.09), transparent 42%),
+        linear-gradient(315deg, rgba(242, 107, 33, 0.10), transparent 45%),
+        var(--paper);
+      color: var(--ink);
+      font-family: "Aptos", "Microsoft YaHei", "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    .page {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      padding: 28px 18px 48px;
+    }
+
+    .hero {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--orange);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(26px, 6vw, 42px);
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .intro {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-top: 18px;
+    }
+
+    .vote-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 18px;
+      border-radius: 999px;
+      background: var(--teal);
+      color: white;
+      font-weight: 700;
+      text-decoration: none;
+      box-shadow: 0 8px 18px rgba(0, 127, 131, 0.25);
+    }
+
+    .vote-button:hover { background: #006b6f; }
+
+    .note {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin: 18px 0 20px;
+    }
+
+    .summary-card {
+      background: rgba(255,255,255,0.76);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .summary-card strong {
+      display: block;
+      color: var(--teal);
+      font-size: 20px;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .project-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .section-title {
+      margin: 26px 0 12px;
+      font-size: 20px;
+      line-height: 1.25;
+    }
+
+    details.project {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(17, 34, 37, 0.06);
+      overflow: hidden;
+    }
+
+    details.project[open] {
+      border-color: rgba(0, 127, 131, 0.45);
+      box-shadow: var(--shadow);
+    }
+
+    summary {
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      gap: 12px;
+      align-items: center;
+      padding: 16px;
+      cursor: pointer;
+      list-style: none;
+    }
+
+    summary::-webkit-details-marker { display: none; }
+
+    .number {
+      display: inline-flex;
+      width: 34px;
+      height: 34px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--teal-soft);
+      color: var(--teal);
+      font-weight: 800;
+    }
+
+    .title-group h2 {
+      margin: 0 0 4px;
+      font-size: 17px;
+      line-height: 1.3;
+    }
+
+    .meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      border-radius: 999px;
+      padding: 0 8px;
+      background: var(--teal-soft);
+      color: var(--teal);
+      font-weight: 700;
+    }
+
+    .badge.high {
+      background: var(--orange-soft);
+      color: #b54800;
+    }
+
+    .chevron {
+      color: var(--teal);
+      font-weight: 900;
+      transition: transform 160ms ease;
+    }
+
+    .vote-choice {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 36px;
+      padding: 0 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--teal);
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .vote-choice input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--teal);
+    }
+
+    .vote-choice:has(input:checked) {
+      border-color: var(--teal);
+      background: var(--teal-soft);
+      box-shadow: 0 6px 14px rgba(0, 127, 131, 0.16);
+    }
+
+    details[open] .chevron { transform: rotate(90deg); }
+
+    .project-body {
+      border-top: 1px solid var(--line);
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .detail-block {
+      border-left: 4px solid var(--teal);
+      background: #fbfdfd;
+      border-radius: 12px;
+      padding: 12px 12px 12px 14px;
+    }
+
+    .detail-block.improvement { border-left-color: var(--orange); }
+    .detail-block.impact { border-left-color: var(--green); }
+
+    .detail-label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .detail-block p {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .footer-cta {
+      margin-top: 22px;
+      padding: 20px;
+      border-radius: 18px;
+      background: var(--ink);
+      color: white;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .footer-cta p {
+      margin: 0;
+      color: rgba(255,255,255,0.82);
+    }
+
+    .footer-cta .vote-button {
+      background: var(--orange);
+      box-shadow: 0 8px 18px rgba(242, 107, 33, 0.24);
+    }
+
+    .vote-panel {
+      margin-top: 22px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .vote-panel-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .vote-panel-header h2 {
+      margin: 0 0 6px;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
+    .vote-panel-header p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .vote-status {
+      display: grid;
+      gap: 12px;
+      padding: 18px 20px 20px;
+      background: linear-gradient(135deg, var(--teal-soft), white);
+    }
+
+    .vote-count {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .vote-count strong {
+      color: var(--teal);
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    .selected-list {
+      display: grid;
+      gap: 7px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .selected-list li {
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.8);
+      font-size: 14px;
+    }
+
+    .vote-message {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .vote-submit {
+      justify-self: start;
+      min-height: 42px;
+      border: 0;
+      border-radius: 999px;
+      padding: 0 18px;
+      background: var(--orange);
+      color: white;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(242, 107, 33, 0.24);
+    }
+
+    .vote-submit:disabled {
+      cursor: not-allowed;
+      background: #9aabad;
+      box-shadow: none;
+    }
+
+    .backend-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 680px) {
+      .page { padding: 18px 12px 36px; }
+      .hero { padding: 18px; border-radius: 16px; }
+      .summary { grid-template-columns: 1fr; }
+      summary { grid-template-columns: auto 1fr; }
+      .vote-choice { grid-column: 1 / -1; justify-self: start; }
+      .chevron { grid-column: 2; justify-self: end; margin-top: -66px; }
+      .title-group h2 { padding-right: 28px; }
+      .footer-cta { align-items: stretch; }
+      .footer-cta .vote-button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow">FY26 Quality Workshop</p>
+      <h1>Process Improvement Voting</h1>
+      <p class="intro">请先查看 10 个改进项目的详细信息，再在页面底部投出 3 票，选择你认为最值得优先推进的项目。</p>
+      <div class="action-row">
+        <a class="vote-button" href="#vote-section" aria-label="Go to voting section">开始投票 / Go to Voting</a>
+        <span class="note">投票规则：每人投 3 票。</span>
+      </div>
+    </section>
+
+    <section class="summary" aria-label="Voting summary">
+      <div class="summary-card"><strong>10</strong>候选改进项目</div>
+      <div class="summary-card"><strong>3</strong>每人投票数</div>
+    </section>
+
+    <h2 class="section-title">改进项目详情与投票</h2>
+
+    <section class="vote-panel" id="vote-section" aria-label="Voting form">
+      <div class="vote-panel-header">
+        <h2>投票区 / Voting</h2>
+        <p>请在每个项目标题旁边勾选投票。每人投 3 票，下方可展开查看每个项目的痛点、建议和收益。</p>
+      </div>
+      <div class="vote-status">
+        <div class="vote-count"><strong id="selected-count">0</strong><span>/ 3 votes selected</span></div>
+        <ul class="selected-list" id="selected-list" aria-live="polite"></ul>
+        <p class="vote-message" id="vote-message">请从下面 10 个项目中选择 3 项。</p>
+        <button class="vote-submit" id="vote-submit" type="button" disabled>复制选择并打开 Forms / Open Forms</button>
+        <p class="backend-note">正式投票收集在 Microsoft Forms 中完成。确认后会复制你的 3 项选择并打开 Forms，请在 Vote 1 / 2 / 3 中选择相同项目后提交。</p>
+      </div>
+    </section>
+
+    <section class="project-list" aria-label="Improvement projects">
+      <details class="project" data-category="质量管理与评审机制">
+        <summary>
+          <span class="number">1</span>
+          <span class="title-group"><h2>CR / 质量评审标准化</h2><span class="meta"><span>质量管理与评审机制</span><span class="badge high">High</span></span></span>
+          <label class="vote-choice"><input type="checkbox" class="vote-checkbox" value="1. CR / 质量评审标准化">投这一项</label>
+          <span class="chevron">›</span>
+        </summary>
+        <div class="project-body">
+          <div class="detail-block"><span class="detail-label">当前痛点</span><p>CR 项目中 Quality 输入和接受准则在不同接口或项目间理解不一致，导致同类变更的评审深度、资料要求和决策记录不一致，影响流程可预测性和执行效率。</p></div>
+          <div class="detail-block improvement"><span class="detail-label">改进建议</span><p>建立 CR 质量评审 guideline，明确不同变更类型的最低质量输入、风险分级、必要证据和 QA 决策边界；对常见场景形成标准案例，减少基于个人理解的额外要求。</p></div>
+          <div class="detail-block impact"><span class="detail-label">预期收益</span><p>提升质量评审一致性，减少重复澄清和低价值会议，把精力聚焦在真实质量风险上。</p></div>
+        </div>
+      </details>
+
+      <details class="project" data-category="风险分级与流程控制">
+        <summary>
+          <span class="number">2</span>
+          <span class="title-group"><h2>风险分级与预防性质量控制</h2><span class="meta"><span>风险分级与流程控制</span><span class="badge high">High</span></span></span>
+          <label class="vote-choice"><input type="checkbox" class="vote-checkbox" value="2. 风险分级与预防性质量控制">投这一项</label>
+          <span class="chevron">›</span>
+        </summary>
+        <div class="project-body">
+          <div class="detail-block"><span class="detail-label">当前痛点</span><p>质量活动有时偏向避免 audit finding 或事后补救，非风险驱动的层层加码、低价值证据收集和前期 cross-check 不足并存；真正影响产品质量和合规风险的控制点优先级不够清晰。</p></div>
+          <div class="detail-block improvement"><span class="detail-label">改进建议</span><p>建立风险分级原则和 review trigger，区分 mandatory control、risk-based control 和可简化项；在变更放行、关键岗位变动、多能工上岗、流程转移前完成质量风险评估，必要时引入 QA cross-check 或分阶段放行。</p></div>
+          <div class="detail-block impact"><span class="detail-label">预期收益</span><p>减少无效质量成本，把质量控制前移，聚焦产品质量、合规风险和关键过程控制。</p></div>
+        </div>
+      </details>
+
+      <details class="project" data-category="质量管理与评审机制">
+        <summary>
+          <span class="number">3</span>
+          <span class="title-group"><h2>质量会议 / Review 节奏</h2><span class="meta"><span>质量管理与评审机制</span><span class="badge">Med</span></span></span>
+          <label class="vote-choice"><input type="checkbox" class="vote-checkbox" value="3. 质量会议 / Review 节奏">投这一项</label>
+          <span class="chevron">›</span>
+        </summary>
+        <div class="project-body">
+          <div class="detail-block"><span class="detail-label">当前痛点</span><p>质量相关会议数量较多且议题重叠，参与人范围和决策目标不清晰，影响问题处理效率和一线执行时间。</p></div>
+          <div class="detail-block improvement"><span class="detail-label">改进建议</span><p>建立质量会议治理原则，按决策、信息同步、问题 review 分类；会前明确议题、输入材料和所需决策，限定必要参与人，会议后输出 owner、due date、decision 和 evidence。</p></div>
+          <div class="detail-block impact"><span class="detail-label">预期收益</span><p>减少重复会议，提高质量问题决策效率和行动闭环质量。</p></div>
+        </div>
+      </details>
+
+      <details class="project" data-category="质量管理与评审机制">
+        <summary>
+          <span class="number">4</span>
+          <span class="title-group"><h2>质量项目 / 资源优先级</h2><span class="meta"><span>质量管理与评审机制</span><span class="badge">Med</span></span></span>
+          <label class="vote-choice"><input type="checkbox" class="vote-checkbox" value="4. 质量项目 / 资源优先级">投这一项</label>
+          <span class="chevron">›</span>
+        </summary>
+        <div class="project-body">
+          <div class="detail-block"><span class="detail-label">当前痛点</span><p>多个质量或流程改进项目并行推进，参与人重复，项目优先级、角色分工和阶段性退出机制不清晰，导致资源分散和交付不稳定。</p></div>
+          <div class="detail-block improvement"><span class="detail-label">改进建议</span><p>建立质量项目 portfolio review，按质量风险、合规影响、客户影响和资源需求排序；明确 sponsor、RACI、里程碑，以及暂停或退出条件。</p></div>
+          <div class="detail-block impact"><span class="detail-label">预期收益</span><p>聚焦高价值质量改进，减少资源浪费，提高项目交付质量。</p></div>
+        </div>
+      </details>
+
+      <details class="project" data-category="风险分级与流程控制">
+        <summary>
+          <span class="number">5</span>
+          <span class="title-group"><h2>电子化流程 / 记录有效性</h2><span class="meta"><span>风险分级与流程控制</span><span class="badge">Med</span></span></span>
+          <label class="vote-choice"><input type="checkbox" class="vote-checkbox" value="5. 电子化流程 / 记录有效性">投这一项</label>
+          <span class="chevron">›</span>
+        </summary>
+        <div class="project-body">
+          <div class="detail-block"><span class="detail-label">当前痛点</span><p>部分无纸化流程仍依赖打印、手签、扫描再上传，形成表面电子化；记录真实性、可追溯性和流程效率收益不充分。</p></div>
+          <div class="detail-block improvement"><span class="detail-label">改进建议</span><p>从记录生命周期评估无纸化场景，优先推动源头电子签核、电子记录和系统留痕；对暂不适合电子化的步骤，明确纸质或混合流程的标准要求。</p></div>
+          <div class="detail-block impact"><span class="detail-label">预期收益</span><p>提升记录完整性和可追溯性，减少重复操作和低价值扫描上传。</p></div>
+        </div>
+      </details>
+
+      <details class="project" data-category="知识沉淀与经验复用">
+        <summary>
+          <span class="number">6</span>
+          <span class="title-group"><h2>质量知识库与 Lesson Learned 标准化</h2><span class="meta"><span>知识沉淀与经验复用</span><span class="badge">Med</span></span></span>
+          <label class="vote-choice"><input type="checkbox" class="vote-checkbox" value="6. 质量知识库与 Lesson Learned 标准化">投这一项</label>
+          <span class="chevron">›</span>
+        </summary>
+        <div class="project-body">
+          <div class="detail-block"><span class="detail-label">当前痛点</span><p>项目开发、TS、量产和问题处理中的经验缺少统一模板、分类、检索和复用追踪，类似问题可能在后续项目或生产阶段重复发生。</p></div>
+          <div class="detail-block improvement"><span class="detail-label">改进建议</span><p>统一 Lesson Learned 模板，建立质量问题和技术经验知识库，按产品、过程、问题类型、根因、纠正预防措施和适用场景分类；在 milestone review、NPI transfer、培训和新项目启动时检查经验是否被引用。</p></div>
+          <div class="detail-block impact"><span class="detail-label">预期收益</span><p>让经验转化为流程控制和团队能力，提升经验复用，减少重复分析和同类问题复发。</p></div>
+        </div>
+      </details>
+
+      <details class="project" data-category="人员能力与质量文化">
+        <summary>
+          <span class="number">7</span>
+          <span class="title-group"><h2>人员变动与上岗质量确认</h2><span class="meta"><span>人员能力与质量文化</span><span class="badge high">High</span></span></span>
+          <label class="vote-choice"><input type="checkbox" class="vote-checkbox" value="7. 人员变动与上岗质量确认">投这一项</label>
+          <span class="chevron">›</span>
+        </summary>
+        <div class="project-body">
+          <div class="detail-block"><span class="detail-label">当前痛点</span><p>岗位调整、关键人员替换、多能工或新员工上岗时，质量风险评估、培训授权、关键控制点、异常升级和资格有效性确认不足。</p></div>
+          <div class="detail-block improvement"><span class="detail-label">改进建议</span><p>建立人员变动质量风险评估和交接 checklist；在培训矩阵中加入质量要求、关键缺陷案例、异常处理和升级规则；上岗前完成资格确认，上岗初期执行 buddy review 或首件/首批质量确认，并保留交接证据。</p></div>
+          <div class="detail-block impact"><span class="detail-label">预期收益</span><p>降低因人员变动或能力切换造成的流程偏差、记录缺失、漏检和过程波动。</p></div>
+        </div>
+      </details>
+
+      <details class="project" data-category="问题闭环与跨部门协作">
+        <summary>
+          <span class="number">8</span>
+          <span class="title-group"><h2>问题闭环与跨部门 Action Tracker</h2><span class="meta"><span>问题闭环与跨部门协作</span><span class="badge high">High</span></span></span>
+          <label class="vote-choice"><input type="checkbox" class="vote-checkbox" value="8. 问题闭环与跨部门 Action Tracker">投这一项</label>
+          <span class="chevron">›</span>
+        </summary>
+        <div class="project-body">
+          <div class="detail-block"><span class="detail-label">当前痛点</span><p>质量问题提出后，owner、due date、状态、证据、责任边界和升级触发条件不够清晰；跨部门问题容易出现等待、重复沟通或无人闭环。</p></div>
+          <div class="detail-block improvement"><span class="detail-label">改进建议</span><p>建立统一 issue/action tracker，按风险等级分配 owner 和 due date；对跨部门关键流程建立 RACI，记录 supporting function、decision needed、status、evidence 和 escalation path，并定义 overdue escalation 和关闭标准。</p></div>
+          <div class="detail-block impact"><span class="detail-label">预期收益</span><p>提高问题关闭效率和关闭质量，减少跨部门接口摩擦，避免问题悬空或重复发生。</p></div>
+        </div>
+      </details>
+
+      <details class="project" data-category="质量管理与评审机制">
+        <summary>
+          <span class="number">9</span>
+          <span class="title-group"><h2>Quality Review 与管理层升级机制</h2><span class="meta"><span>质量管理与评审机制</span><span class="badge high">High</span></span></span>
+          <label class="vote-choice"><input type="checkbox" class="vote-checkbox" value="9. Quality Review 与管理层升级机制">投这一项</label>
+          <span class="chevron">›</span>
+        </summary>
+        <div class="project-body">
+          <div class="detail-block"><span class="detail-label">当前痛点</span><p>质量问题处理偏单点纠正，缺少按风险、趋势和重复性进行系统 review；涉及多部门资源或优先级的问题缺少清晰 sponsor、升级路径和管理层 review 节奏。</p></div>
+          <div class="detail-block improvement"><span class="detail-label">改进建议</span><p>建立定期 Quality Review / Issue Review，按 DQ、NC、audit finding、客户影响和重复发生趋势筛选议题；对高风险、逾期或跨部门阻塞问题指定 sponsor，并在 management quality review 中跟踪 action、owner、due date、evidence、关闭标准和资源需求。</p></div>
+          <div class="detail-block impact"><span class="detail-label">预期收益</span><p>从个案处理转向趋势管理和预防性改进，提高高风险质量问题的决策速度和资源保障。</p></div>
+        </div>
+      </details>
+
+      <details class="project" data-category="人员能力与质量文化">
+        <summary>
+          <span class="number">10</span>
+          <span class="title-group"><h2>质量行为正反馈机制</h2><span class="meta"><span>人员能力与质量文化</span><span class="badge">Med</span></span></span>
+          <label class="vote-choice"><input type="checkbox" class="vote-checkbox" value="10. 质量行为正反馈机制">投这一项</label>
+          <span class="chevron">›</span>
+        </summary>
+        <div class="project-body">
+          <div class="detail-block"><span class="detail-label">当前痛点</span><p>主动发现风险、升级异常、推动闭环和分享经验的质量行为缺少稳定认可机制，质量文化更多依赖个人自驱。</p></div>
+          <div class="detail-block improvement"><span class="detail-label">改进建议</span><p>建立质量正反馈机制：在月度或季度质量沟通中认可 early warning、问题闭环和经验沉淀；把质量行为纳入团队目标或 leader communication。</p></div>
+          <div class="detail-block impact"><span class="detail-label">预期收益</span><p>强化早发现、早升级、早闭环的行为导向，提升质量优先级。</p></div>
+        </div>
+      </details>
+    </section>
+
+    <section class="footer-cta">
+      <div>
+        <strong>Need to change your vote?</strong>
+        <p>请回到上方投票区确认或修改你的 3 票选择。</p>
+      </div>
+      <a class="vote-button" href="#vote-section">回到投票区 / Back to Voting</a>
+    </section>
+  </main>
+  <script>
+    const maxVotes = 3;
+    const formsUrl = 'https://forms.office.com/Pages/ResponsePage.aspx?id=3Rq_XSogjUuBW78PsCTgMxpTDeM-3UxEpHJDBsM_XnFUMEhTTFRWRUNYTTc4RU8wSVdWSzUxS1VNQy4u';
+    const checkboxes = Array.from(document.querySelectorAll('.vote-checkbox'));
+    const selectedCount = document.getElementById('selected-count');
+    const selectedList = document.getElementById('selected-list');
+    const voteMessage = document.getElementById('vote-message');
+    const voteSubmit = document.getElementById('vote-submit');
+
+    document.querySelectorAll('.vote-choice').forEach((choice) => {
+      choice.addEventListener('click', (event) => event.stopPropagation());
+    });
+
+    function updateVoteState() {
+      const selected = checkboxes.filter((checkbox) => checkbox.checked);
+      selectedCount.textContent = String(selected.length);
+      selectedList.innerHTML = '';
+
+      selected.forEach((checkbox) => {
+        const item = document.createElement('li');
+        item.textContent = checkbox.value;
+        selectedList.appendChild(item);
+      });
+
+      checkboxes.forEach((checkbox) => {
+        checkbox.disabled = selected.length >= maxVotes && !checkbox.checked;
+      });
+
+      voteSubmit.disabled = selected.length !== maxVotes;
+
+      if (selected.length === 0) {
+        voteMessage.textContent = '请从下面 10 个项目中选择 3 项。';
+      } else if (selected.length < maxVotes) {
+        voteMessage.textContent = `还需要选择 ${maxVotes - selected.length} 项。`;
+      } else {
+        voteMessage.textContent = '已选择 3 项，可以确认投票。';
+      }
+    }
+
+    checkboxes.forEach((checkbox) => {
+      checkbox.addEventListener('change', updateVoteState);
+    });
+
+    function copyToClipboard(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text).then(() => true).catch(() => false);
+      }
+
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.setAttribute('readonly', '');
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-9999px';
+      document.body.appendChild(textArea);
+      textArea.select();
+
+      try {
+        return Promise.resolve(document.execCommand('copy'));
+      } catch (error) {
+        return Promise.resolve(false);
+      } finally {
+        document.body.removeChild(textArea);
+      }
+    }
+
+    voteSubmit.addEventListener('click', async () => {
+      const selected = checkboxes.filter((checkbox) => checkbox.checked).map((checkbox) => checkbox.value);
+      const voteText = selected.map((value, index) => `Vote ${index + 1}: ${value}`).join('\n');
+      const copied = await copyToClipboard(voteText);
+      voteMessage.textContent = copied
+        ? '已复制 3 项选择。Forms 打开后，请在 Vote 1 / 2 / 3 中选择相同项目并提交。'
+        : 'Forms 打开后，请对照下方 3 项选择完成提交。';
+      alert(`${copied ? '已复制当前选择。' : '当前选择如下。'}\n\n${voteText}\n\n接下来会打开 Microsoft Forms，请在 Vote 1 / 2 / 3 中选择相同项目并提交。`);
+      const formsWindow = window.open(formsUrl, '_blank', 'noopener');
+      if (!formsWindow) {
+        window.location.href = formsUrl;
+      }
+    });
+
+    updateVoteState();
+  </script>
+</body>
+</html>
