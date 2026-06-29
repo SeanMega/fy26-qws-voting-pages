@@ -99,24 +99,33 @@
 
     .summary {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr;
       gap: 10px;
       margin: 18px 0 20px;
     }
 
     .summary-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
       background: rgba(255,255,255,0.76);
       border: 1px solid var(--line);
       border-radius: 14px;
-      padding: 12px;
+      padding: 14px 16px;
     }
 
     .summary-card strong {
-      display: block;
+      display: inline-flex;
       color: var(--teal);
-      font-size: 20px;
+      font-size: 24px;
       line-height: 1;
-      margin-bottom: 6px;
+      margin-bottom: 0;
+    }
+
+    .summary-card span {
+      color: var(--muted);
+      font-weight: 700;
     }
 
     .project-list {
@@ -145,7 +154,7 @@
 
     summary {
       display: grid;
-      grid-template-columns: auto 1fr auto auto;
+      grid-template-columns: auto minmax(0, 1fr) auto auto;
       gap: 12px;
       align-items: center;
       padding: 16px;
@@ -167,6 +176,10 @@
       font-weight: 800;
     }
 
+    .title-group {
+      min-width: 0;
+    }
+
     .title-group h2 {
       margin: 0 0 4px;
       font-size: 17px;
@@ -181,24 +194,17 @@
       font-size: 12px;
     }
 
-    .badge {
+    .chevron {
       display: inline-flex;
+      width: 32px;
+      height: 32px;
       align-items: center;
-      min-height: 22px;
-      border-radius: 999px;
-      padding: 0 8px;
+      justify-content: center;
+      border-radius: 50%;
       background: var(--teal-soft);
       color: var(--teal);
-      font-weight: 700;
-    }
-
-    .badge.high {
-      background: var(--orange-soft);
-      color: #b54800;
-    }
-
-    .chevron {
-      color: var(--teal);
+      font-size: 24px;
+      line-height: 1;
       font-weight: 900;
       transition: transform 160ms ease;
     }
@@ -302,19 +308,14 @@
     }
 
     .vote-panel-header h2 {
-      margin: 0 0 6px;
+      margin: 0;
       font-size: 22px;
       line-height: 1.2;
     }
 
-    .vote-panel-header p {
-      margin: 0;
-      color: var(--muted);
-    }
-
     .vote-status {
       display: grid;
-      gap: 12px;
+      gap: 10px;
       padding: 18px 20px 20px;
       background: linear-gradient(135deg, var(--teal-soft), white);
     }
@@ -384,10 +385,8 @@
       .page { padding: 18px 12px 36px; }
       .hero { padding: 18px; border-radius: 16px; }
       .summary { grid-template-columns: 1fr; }
-      summary { grid-template-columns: auto 1fr; }
+      summary { grid-template-columns: auto minmax(0, 1fr) auto; }
       .vote-choice { grid-column: 1 / -1; justify-self: start; }
-      .chevron { grid-column: 2; justify-self: end; margin-top: -66px; }
-      .title-group h2 { padding-right: 28px; }
       .footer-cta { align-items: stretch; }
       .footer-cta .vote-button { width: 100%; }
     }
@@ -406,8 +405,7 @@
     </section>
 
     <section class="summary" aria-label="Voting summary">
-      <div class="summary-card"><strong>10</strong>候选改进项目</div>
-      <div class="summary-card"><strong>3</strong>每人投票数</div>
+      <div class="summary-card"><strong>10选3</strong><span>投票不分先后</span></div>
     </section>
 
     <h2 class="section-title">改进项目详情与投票</h2>
@@ -415,14 +413,12 @@
     <section class="vote-panel" id="vote-section" aria-label="Voting form">
       <div class="vote-panel-header">
         <h2>投票区 / Voting</h2>
-        <p>请在每个项目标题旁边勾选投票。每人投 3 票，下方可展开查看每个项目的痛点、建议和收益。</p>
       </div>
       <div class="vote-status">
-        <div class="vote-count"><strong id="selected-count">0</strong><span>/ 3 votes selected</span></div>
+        <div class="vote-count"><strong id="selected-count">0</strong><span>/ 3</span></div>
         <ul class="selected-list" id="selected-list" aria-live="polite"></ul>
-        <p class="vote-message" id="vote-message">请从下面 10 个项目中选择 3 项。</p>
-        <button class="vote-submit" id="vote-submit" type="button" disabled>复制选择并打开 Forms / Open Forms</button>
-        <p class="backend-note">正式投票收集在 Microsoft Forms 中完成。确认后会复制你的 3 项选择并打开 Forms，请粘贴到第一题“你投票的项目”中，再填写 Function / Team 后提交。</p>
+        <p class="vote-message" id="vote-message">请选择 3 项。</p>
+        <button class="vote-submit" id="vote-submit" type="button" disabled>复制并打开 Forms</button>
       </div>
     </section>
 
@@ -430,9 +426,9 @@
       <details class="project" data-category="质量管理与评审机制">
         <summary>
           <span class="number">1</span>
-          <span class="title-group"><h2>CR / 质量评审标准化</h2><span class="meta"><span>质量管理与评审机制</span><span class="badge high">High</span></span></span>
+          <span class="title-group"><h2>CR / 质量评审标准化</h2><span class="meta"><span>质量管理与评审机制</span></span></span>
+          <span class="chevron" aria-hidden="true">›</span>
           <label class="vote-choice"><input type="checkbox" class="vote-checkbox" value="1. CR / 质量评审标准化">投这一项</label>
-          <span class="chevron">›</span>
         </summary>
         <div class="project-body">
           <div class="detail-block"><span class="detail-label">当前痛点</span><p>CR 项目中 Quality 输入和接受准则在不同接口或项目间理解不一致，导致同类变更的评审深度、资料要求和决策记录不一致，影响流程可预测性和执行效率。</p></div>
@@ -444,9 +440,9 @@
       <details class="project" data-category="风险分级与流程控制">
         <summary>
           <span class="number">2</span>
-          <span class="title-group"><h2>风险分级与预防性质量控制</h2><span class="meta"><span>风险分级与流程控制</span><span class="badge high">High</span></span></span>
+          <span class="title-group"><h2>风险分级与预防性质量控制</h2><span class="meta"><span>风险分级与流程控制</span></span></span>
+          <span class="chevron" aria-hidden="true">›</span>
           <label class="vote-choice"><input type="checkbox" class="vote-checkbox" value="2. 风险分级与预防性质量控制">投这一项</label>
-          <span class="chevron">›</span>
         </summary>
         <div class="project-body">
           <div class="detail-block"><span class="detail-label">当前痛点</span><p>质量活动有时偏向避免 audit finding 或事后补救，非风险驱动的层层加码、低价值证据收集和前期 cross-check 不足并存；真正影响产品质量和合规风险的控制点优先级不够清晰。</p></div>
@@ -458,9 +454,9 @@
       <details class="project" data-category="质量管理与评审机制">
         <summary>
           <span class="number">3</span>
-          <span class="title-group"><h2>质量会议 / Review 节奏</h2><span class="meta"><span>质量管理与评审机制</span><span class="badge">Med</span></span></span>
+          <span class="title-group"><h2>质量会议 / Review 节奏</h2><span class="meta"><span>质量管理与评审机制</span></span></span>
+          <span class="chevron" aria-hidden="true">›</span>
           <label class="vote-choice"><input type="checkbox" class="vote-checkbox" value="3. 质量会议 / Review 节奏">投这一项</label>
-          <span class="chevron">›</span>
         </summary>
         <div class="project-body">
           <div class="detail-block"><span class="detail-label">当前痛点</span><p>质量相关会议数量较多且议题重叠，参与人范围和决策目标不清晰，影响问题处理效率和一线执行时间。</p></div>
@@ -472,9 +468,9 @@
       <details class="project" data-category="质量管理与评审机制">
         <summary>
           <span class="number">4</span>
-          <span class="title-group"><h2>质量项目 / 资源优先级</h2><span class="meta"><span>质量管理与评审机制</span><span class="badge">Med</span></span></span>
+          <span class="title-group"><h2>质量项目 / 资源优先级</h2><span class="meta"><span>质量管理与评审机制</span></span></span>
+          <span class="chevron" aria-hidden="true">›</span>
           <label class="vote-choice"><input type="checkbox" class="vote-checkbox" value="4. 质量项目 / 资源优先级">投这一项</label>
-          <span class="chevron">›</span>
         </summary>
         <div class="project-body">
           <div class="detail-block"><span class="detail-label">当前痛点</span><p>多个质量或流程改进项目并行推进，参与人重复，项目优先级、角色分工和阶段性退出机制不清晰，导致资源分散和交付不稳定。</p></div>
@@ -486,9 +482,9 @@
       <details class="project" data-category="风险分级与流程控制">
         <summary>
           <span class="number">5</span>
-          <span class="title-group"><h2>电子化流程 / 记录有效性</h2><span class="meta"><span>风险分级与流程控制</span><span class="badge">Med</span></span></span>
+          <span class="title-group"><h2>电子化流程 / 记录有效性</h2><span class="meta"><span>风险分级与流程控制</span></span></span>
+          <span class="chevron" aria-hidden="true">›</span>
           <label class="vote-choice"><input type="checkbox" class="vote-checkbox" value="5. 电子化流程 / 记录有效性">投这一项</label>
-          <span class="chevron">›</span>
         </summary>
         <div class="project-body">
           <div class="detail-block"><span class="detail-label">当前痛点</span><p>部分无纸化流程仍依赖打印、手签、扫描再上传，形成表面电子化；记录真实性、可追溯性和流程效率收益不充分。</p></div>
@@ -500,9 +496,9 @@
       <details class="project" data-category="知识沉淀与经验复用">
         <summary>
           <span class="number">6</span>
-          <span class="title-group"><h2>质量知识库与 Lesson Learned 标准化</h2><span class="meta"><span>知识沉淀与经验复用</span><span class="badge">Med</span></span></span>
+          <span class="title-group"><h2>质量知识库与 Lesson Learned 标准化</h2><span class="meta"><span>知识沉淀与经验复用</span></span></span>
+          <span class="chevron" aria-hidden="true">›</span>
           <label class="vote-choice"><input type="checkbox" class="vote-checkbox" value="6. 质量知识库与 Lesson Learned 标准化">投这一项</label>
-          <span class="chevron">›</span>
         </summary>
         <div class="project-body">
           <div class="detail-block"><span class="detail-label">当前痛点</span><p>项目开发、TS、量产和问题处理中的经验缺少统一模板、分类、检索和复用追踪，类似问题可能在后续项目或生产阶段重复发生。</p></div>
@@ -514,9 +510,9 @@
       <details class="project" data-category="人员能力与质量文化">
         <summary>
           <span class="number">7</span>
-          <span class="title-group"><h2>人员变动与上岗质量确认</h2><span class="meta"><span>人员能力与质量文化</span><span class="badge high">High</span></span></span>
+          <span class="title-group"><h2>人员变动与上岗质量确认</h2><span class="meta"><span>人员能力与质量文化</span></span></span>
+          <span class="chevron" aria-hidden="true">›</span>
           <label class="vote-choice"><input type="checkbox" class="vote-checkbox" value="7. 人员变动与上岗质量确认">投这一项</label>
-          <span class="chevron">›</span>
         </summary>
         <div class="project-body">
           <div class="detail-block"><span class="detail-label">当前痛点</span><p>岗位调整、关键人员替换、多能工或新员工上岗时，质量风险评估、培训授权、关键控制点、异常升级和资格有效性确认不足。</p></div>
@@ -528,9 +524,9 @@
       <details class="project" data-category="问题闭环与跨部门协作">
         <summary>
           <span class="number">8</span>
-          <span class="title-group"><h2>问题闭环与跨部门 Action Tracker</h2><span class="meta"><span>问题闭环与跨部门协作</span><span class="badge high">High</span></span></span>
+          <span class="title-group"><h2>问题闭环与跨部门 Action Tracker</h2><span class="meta"><span>问题闭环与跨部门协作</span></span></span>
+          <span class="chevron" aria-hidden="true">›</span>
           <label class="vote-choice"><input type="checkbox" class="vote-checkbox" value="8. 问题闭环与跨部门 Action Tracker">投这一项</label>
-          <span class="chevron">›</span>
         </summary>
         <div class="project-body">
           <div class="detail-block"><span class="detail-label">当前痛点</span><p>质量问题提出后，owner、due date、状态、证据、责任边界和升级触发条件不够清晰；跨部门问题容易出现等待、重复沟通或无人闭环。</p></div>
@@ -542,9 +538,9 @@
       <details class="project" data-category="质量管理与评审机制">
         <summary>
           <span class="number">9</span>
-          <span class="title-group"><h2>Quality Review 与管理层升级机制</h2><span class="meta"><span>质量管理与评审机制</span><span class="badge high">High</span></span></span>
+          <span class="title-group"><h2>Quality Review 与管理层升级机制</h2><span class="meta"><span>质量管理与评审机制</span></span></span>
+          <span class="chevron" aria-hidden="true">›</span>
           <label class="vote-choice"><input type="checkbox" class="vote-checkbox" value="9. Quality Review 与管理层升级机制">投这一项</label>
-          <span class="chevron">›</span>
         </summary>
         <div class="project-body">
           <div class="detail-block"><span class="detail-label">当前痛点</span><p>质量问题处理偏单点纠正，缺少按风险、趋势和重复性进行系统 review；涉及多部门资源或优先级的问题缺少清晰 sponsor、升级路径和管理层 review 节奏。</p></div>
@@ -556,9 +552,9 @@
       <details class="project" data-category="人员能力与质量文化">
         <summary>
           <span class="number">10</span>
-          <span class="title-group"><h2>质量行为正反馈机制</h2><span class="meta"><span>人员能力与质量文化</span><span class="badge">Med</span></span></span>
+          <span class="title-group"><h2>质量行为正反馈机制</h2><span class="meta"><span>人员能力与质量文化</span></span></span>
+          <span class="chevron" aria-hidden="true">›</span>
           <label class="vote-choice"><input type="checkbox" class="vote-checkbox" value="10. 质量行为正反馈机制">投这一项</label>
-          <span class="chevron">›</span>
         </summary>
         <div class="project-body">
           <div class="detail-block"><span class="detail-label">当前痛点</span><p>主动发现风险、升级异常、推动闭环和分享经验的质量行为缺少稳定认可机制，质量文化更多依赖个人自驱。</p></div>
@@ -607,11 +603,11 @@
       voteSubmit.disabled = selected.length !== maxVotes;
 
       if (selected.length === 0) {
-        voteMessage.textContent = '请从下面 10 个项目中选择 3 项。';
+        voteMessage.textContent = '请选择 3 项。';
       } else if (selected.length < maxVotes) {
-        voteMessage.textContent = `还需要选择 ${maxVotes - selected.length} 项。`;
+        voteMessage.textContent = `还需 ${maxVotes - selected.length} 项。`;
       } else {
-        voteMessage.textContent = '已选择 3 项，可以确认投票。';
+        voteMessage.textContent = '已选 3 项。';
       }
     }
 
@@ -646,8 +642,8 @@
       const voteText = selected.join('\n');
       const copied = await copyToClipboard(voteText);
       voteMessage.textContent = copied
-        ? '已复制 3 项选择。Forms 打开后，请粘贴到第一题“你投票的项目”中，并填写 Function / Team 后提交。'
-        : 'Forms 打开后，请将下方 3 项选择填写到第一题“你投票的项目”中。';
+        ? '已复制，打开 Forms 后粘贴到第 1 题。'
+        : '请将这 3 项填写到 Forms 第 1 题。';
       alert(`${copied ? '已复制当前选择。' : '当前选择如下。'}\n\n${voteText}\n\n接下来会打开 Microsoft Forms，请将以上内容粘贴到第一题“你投票的项目”中，并填写 Function / Team 后提交。`);
       const formsWindow = window.open(formsUrl, '_blank', 'noopener');
       if (!formsWindow) {
