@@ -644,7 +644,7 @@
       voteMessage.textContent = copied
         ? '已复制，打开 Forms 后粘贴到第 1 题。'
         : '请将这 3 项填写到 Forms 第 1 题。';
-      alert(`${copied ? '已复制当前选择。' : '当前选择如下。'}\n\n${voteText}\n\n接下来会打开 Microsoft Forms，请将以上内容粘贴到第一题“你投票的项目”中，并填写 Function / Team 后提交。`);
+      alert(`${copied ? '已复制当前选择。' : '当前选择如下。'}\n\n${voteText}\n\n接下来会打开 Microsoft Forms，请将以上内容粘贴到第一题“你投票的项目”中；第二题 Function / Team 可选择填写。`);
       const formsWindow = window.open(formsUrl, '_blank', 'noopener');
       if (!formsWindow) {
         window.location.href = formsUrl;
