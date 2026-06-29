@@ -422,7 +422,7 @@
         <ul class="selected-list" id="selected-list" aria-live="polite"></ul>
         <p class="vote-message" id="vote-message">请从下面 10 个项目中选择 3 项。</p>
         <button class="vote-submit" id="vote-submit" type="button" disabled>复制选择并打开 Forms / Open Forms</button>
-        <p class="backend-note">正式投票收集在 Microsoft Forms 中完成。确认后会复制你的 3 项选择并打开 Forms，请在 Vote 1 / 2 / 3 中选择相同项目后提交。</p>
+        <p class="backend-note">正式投票收集在 Microsoft Forms 中完成。确认后会复制你的 3 项选择并打开 Forms，请粘贴到第一题“你投票的项目”中，再填写 Function / Team 后提交。</p>
       </div>
     </section>
 
@@ -643,12 +643,12 @@
 
     voteSubmit.addEventListener('click', async () => {
       const selected = checkboxes.filter((checkbox) => checkbox.checked).map((checkbox) => checkbox.value);
-      const voteText = selected.map((value, index) => `Vote ${index + 1}: ${value}`).join('\n');
+      const voteText = selected.join('\n');
       const copied = await copyToClipboard(voteText);
       voteMessage.textContent = copied
-        ? '已复制 3 项选择。Forms 打开后，请在 Vote 1 / 2 / 3 中选择相同项目并提交。'
-        : 'Forms 打开后，请对照下方 3 项选择完成提交。';
-      alert(`${copied ? '已复制当前选择。' : '当前选择如下。'}\n\n${voteText}\n\n接下来会打开 Microsoft Forms，请在 Vote 1 / 2 / 3 中选择相同项目并提交。`);
+        ? '已复制 3 项选择。Forms 打开后，请粘贴到第一题“你投票的项目”中，并填写 Function / Team 后提交。'
+        : 'Forms 打开后，请将下方 3 项选择填写到第一题“你投票的项目”中。';
+      alert(`${copied ? '已复制当前选择。' : '当前选择如下。'}\n\n${voteText}\n\n接下来会打开 Microsoft Forms，请将以上内容粘贴到第一题“你投票的项目”中，并填写 Function / Team 后提交。`);
       const formsWindow = window.open(formsUrl, '_blank', 'noopener');
       if (!formsWindow) {
         window.location.href = formsUrl;
