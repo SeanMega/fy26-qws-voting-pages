@@ -288,6 +288,19 @@
       color: rgba(255,255,255,0.82);
     }
 
+    .footer-vote-count {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-weight: 700;
+    }
+
+    .footer-vote-count strong {
+      color: white;
+      font-size: 34px;
+      line-height: 1;
+    }
+
     .footer-cta .vote-button {
       background: var(--orange);
       box-shadow: 0 8px 18px rgba(242, 107, 33, 0.24);
@@ -393,7 +406,7 @@
   </style>
 </head>
 <body>
-  <main class="page">
+  <main class="page" id="top">
     <section class="hero">
       <p class="eyebrow">FY26 Quality Workshop</p>
       <h1>Process Improvement Voting</h1>
@@ -558,10 +571,10 @@
 
     <section class="footer-cta">
       <div>
-        <strong>点击投票</strong>
-        <p>请选择你认为最值得优先推进的 3 个项目。</p>
+        <strong>回到顶部</strong>
+        <p class="footer-vote-count"><strong id="footer-selected-count">0</strong><span>/ 3</span></p>
       </div>
-      <a class="vote-button" href="#vote-section">点击投票</a>
+      <a class="vote-button" href="#top">回到顶部</a>
     </section>
   </main>
   <script>
@@ -569,6 +582,7 @@
     const formsUrl = 'https://forms.office.com/Pages/ResponsePage.aspx?id=3Rq_XSogjUuBW78PsCTgMxpTDeM-3UxEpHJDBsM_XnFUN1JBVEc3N1dJTjRXVU5ISk1IMUQ2Sk5VUi4u';
     const checkboxes = Array.from(document.querySelectorAll('.vote-checkbox'));
     const selectedCount = document.getElementById('selected-count');
+    const footerSelectedCount = document.getElementById('footer-selected-count');
     const selectedList = document.getElementById('selected-list');
     const voteMessage = document.getElementById('vote-message');
     const voteSubmit = document.getElementById('vote-submit');
@@ -580,6 +594,7 @@
     function updateVoteState() {
       const selected = checkboxes.filter((checkbox) => checkbox.checked);
       selectedCount.textContent = String(selected.length);
+      footerSelectedCount.textContent = String(selected.length);
       selectedList.innerHTML = '';
 
       selected.forEach((checkbox) => {
